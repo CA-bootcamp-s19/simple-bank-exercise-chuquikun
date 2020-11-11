@@ -87,9 +87,9 @@ contract SimpleBank {
           then return the balance of the user */
           require( enrolled[msg.sender] == true, "You do not have an account in this bank.");
           require(msg.value > 0, "Your deposit must be greater than zero.");
-          balance[msg.sender] += msg.value;
+          balances[msg.sender] += msg.value;
           emit LogDepositMade(msg.sender, msg.value);
-          return balance[msg.sender];
+          return balances[msg.sender];
     }
 
     /// @notice Withdraw ether from bank
@@ -103,10 +103,10 @@ contract SimpleBank {
            to the user attempting to withdraw. 
            return the user's balance.*/
           require( enrolled[msg.sender] == true, "You do not have an account in this bank.");
-          require(withdrawAmount >= balance[msg.sender], "Your balance is than the amount wanted.");
-          balance[msg.sender] -= msg.withdrawAmount;
-          emit LogWithdrawal(msg.sender, withdrawAmount,uint balance[msg.sender]);
-          return balance[msg.sender];
+          require(withdrawAmount <= balances[msg.sender], "Your balance is than the amount wanted.");
+          balances[msg.sender] -= withdrawAmount;
+          emit LogWithdrawal(msg.sender, withdrawAmount,balances[msg.sender]);
+          return balances[msg.sender];
     }
 
 }
