@@ -33,7 +33,7 @@ contract SimpleBank {
 
     /* Create an event called LogWithdrawal */
     /* Add 3 arguments for this event, an accountAddress, withdrawAmount and a newBalance */
-    event LogWithdrawal(address indexed accountAddress, uint withdrawAmount,uint newBalance)
+    event LogWithdrawal(address indexed accountAddress, uint withdrawAmount,uint newBalance);
 
 
     //
@@ -61,7 +61,7 @@ contract SimpleBank {
     // allows function to run locally/off blockchain
     function getBalance() public view returns (uint) {
         /* Get the balance of the sender of this transaction */
-        require(require[msg.sender], "This address is not enrolled in the bank.");
+        require(balances[msg.sender], "This address is not enrolled in the bank.");
         return balances[msg.sender];
     }
 
@@ -69,6 +69,11 @@ contract SimpleBank {
     /// @return The users enrolled status
     // Emit the appropriate event
     function enroll() public returns (bool){
+        require(!balances[msg.sender], "You are already enrolled.");
+        enrolled[msg.sender] = true;
+        emit LogEnrolled(msg.sender);
+        return true;
+
     }
 
     /// @notice Deposit ether into bank
