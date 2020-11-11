@@ -61,7 +61,7 @@ contract SimpleBank {
     // allows function to run locally/off blockchain
     function getBalance() public view returns (uint) {
         /* Get the balance of the sender of this transaction */
-        require(balances[msg.sender], "This address is not enrolled in the bank.");
+        require(enrolled[msg.sender], "This address is not enrolled in the bank.");
         return balances[msg.sender];
     }
 
@@ -69,7 +69,7 @@ contract SimpleBank {
     /// @return The users enrolled status
     // Emit the appropriate event
     function enroll() public returns (bool){
-        require(!balances[msg.sender], "You are already enrolled.");
+        require(!enrolled[msg.sender], "You are already enrolled.");
         enrolled[msg.sender] = true;
         emit LogEnrolled(msg.sender);
         return true;
@@ -82,9 +82,13 @@ contract SimpleBank {
     // Use the appropriate global variables to get the transaction sender and value
     // Emit the appropriate event    
     // Users should be enrolled before they can make deposits
-    function deposit() public returns (uint) {
+    function deposit() public payable returns (uint) {
         /* Add the amount to the user's balance, call the event associated with a deposit,
           then return the balance of the user */
+          require( enrolled[msg.sender] == true && msg.value > 0);
+          balance[msg.sender] += msg.value;
+          emit LogDepositMade(msg.sender, msg.value);
+          return balance[msg.sender];
     }
 
     /// @notice Withdraw ether from bank
